@@ -1,4 +1,4 @@
-import voteContract from "./contract/Vote.json";
+import voteContract from "../contract/Vote.json";
 
 export const CONTRACT_ABI = voteContract.abi;
 
