@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { CONTRACT_ABI, CONTRACT_ADDRESS, NETWORK_ID } from "../utils/constant";
+import { CONTRACT_ABI, CONTRACT_ADDRESS, NETWORK_ID } from "../utils/constants";
 
 let web3;
 let contract;
