@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './styles/App.css'
+import { useEffect, useState } from "react";
+import { connectWallet } from "./services/blockchainService";
+import ProposalList from "./components/ProposalList";
+import Header from "./components/Header";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [account, setAccount] = useState(null);
+  const [hasMetaMask, setHasMetaMask] = useState(true);
+
+  const handleConnect = async () => {
+    const userAddress = await connectWallet();
+    if (userAddress) {
+      setAccount(userAddress);
+    }
+  };
+
+  useEffect(() => {
+    if (!window.ethereum) {
+      setHasMetaMask(false);
+      return;
+    }
+
+    handleConnect();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <Header account={account} onConnect={handleConnect} />
+      {!hasMetaMask ? (
+        <p style={{ color: "red" }}>🦊 Veuillez installer MetaMask pour utiliser l’application.</p>
+      ) : account ? (
+        <ProposalList userAddress={account} />
+      ) : (
+        <p>Veuillez connecter votre portefeuille.</p>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
