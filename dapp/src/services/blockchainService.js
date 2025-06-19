@@ -43,14 +43,22 @@ export async function getNumProposals() {
  * Récupère toutes les propositions (description + nombre de votes).
  */
 export async function getProposals() {
-  if (!contract) return [];
+  if (!contract) {
+      console.warn("Contrat non initialisé.");
+      return [];
+  }
 
   const count = await getNumProposals();
   const proposals = [];
 
   for (let i = 0; i < count; i++) {
-    const { description, voteCount } = await contract.methods.getProposal(i).call();
-    proposals.push({ index: i, description, voteCount: parseInt(voteCount) });
+    const result = await contract.methods.getProposal(i).call();
+
+    proposals.push({
+      index: i,
+      description: result[0],  // ici on récupère par position
+      voteCount: parseInt(result[1]), // idem
+    });
   }
 
   return proposals;
