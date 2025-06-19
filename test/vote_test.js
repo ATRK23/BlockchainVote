@@ -48,4 +48,23 @@ contract("Vote", accounts => {
             assert.include(err.message, "Index de proposition invalide", "Erreur incorrecte");
         }
     });
+
+    it("permet à l'admin d'ajouter une proposition", async () => {
+    await voteInstance.addProposal("Proposition D", { from: admin });
+
+    const num = await voteInstance.getNumProposals();
+    assert.equal(num.toNumber(), 4, "La proposition n’a pas été ajoutée");
+
+    const newProp = await voteInstance.getProposal(3);
+    assert.equal(newProp.description, "Proposition D", "La description de la nouvelle proposition est incorrecte");
+    });
+
+    it("rejette l'ajout d'une proposition par un non-admin", async () => {
+    try {
+        await voteInstance.addProposal("Proposition E", { from: voter1 });
+        assert.fail("L'ajout aurait dû échouer");
+    } catch (err) {
+        assert.include(err.message, "Seul l'administrateur", "Erreur non liée au contrôle d'accès");
+    }
+    });
 });
