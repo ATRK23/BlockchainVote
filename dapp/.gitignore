@@ -23,6 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-Vote.json
+/contracts/Vote.json
+!/contracts/Vote.json
 
 /node_modules

@@ -1,14 +1,68 @@
-# BlockchainVote
-USPN projet blockchain
+# Blockchain Vote – Application de Vote Électronique Sécurisée
+
+## Objectif
+
+Créer une application de vote électronique utilisant :
+- Un **Smart Contract Ethereum** (Solidity),
+- Un environnement local **Ganache CLI**,
+- Une **DApp React** connectée à MetaMask.
+
+---
+
+## Prérequis
+
+### 1. Installer Node.js & npm
+
+```bash
+sudo apt update
+sudo apt install -y nodejs npm
+```
+
+#### Vérifier la version et l'installation
+```bash
+node -v     # Doit être ≥ 14
+npm -v
+```
+
+### 2. Installer Truffle
+```bash
+npm install -g truffle
+```
+
+### 3. Installer Ganache
+```bash
+npm install -g ganache
+```
+
+### 4. Donner les droits d'execution au script de lancement
+```bash
+chmod +x run.sh
+```
+
+### 5. Configuration MetaMask
+- Installer l'extension navigateur [MetaMask](https://metamask.io/)
+- Se créer un compte
+- Lancer temporairement ganache pour qu'il soit détecté par MetaMask : 
+```bash
+ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337
+```
+#### Créer un nouveau réseau personnalisé avec les paramètres suivants :
+- URL par défaut du RPC : ```http://127.0.0.1:8545```
+- ID de chaîne : ```1337```
+- Symbole de la devise : ```ETH```
 
 ## Utilisation
 
-lancer ganache avec ```ganache --chain.chainId 1337 --chain.networkId 1337``` (pour le lancer sur l'ID de serveur 1337 par défaut),
-compiler les contracts avec ```truffle compile --all && truffle migrate --reset``` dans un autre terminal
+### - Dans un premier terminal : **Lancer ganache**
+```bash
+ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337
+```
 
-lancer la page react avec ```cd dapp && npm install && npm run dev```,
-la page web se trouve normalement à l'adresse suivante : ```http://localhost:5173/``` (vérifier dans la console de npm)
+### - Dans un second terminal : Script de lancement
+```bash
+./run.sh
+```
 
-créer un compte metamask, ajouter un nouveau réseau personnalisé à ce compte avec les informations de ganache, puis selectionner ce réseau.
+### - Se rendre sur le site web hebergé
+- [http://localhost:5173/](http://localhost:5173/)
 
-lorsque vous cliquez sur le bouton "connecter wallet", l'adresse s'affiche. Vous pouvez aussi observer les différentes proposition disponibles
