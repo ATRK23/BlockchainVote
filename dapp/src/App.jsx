@@ -17,17 +17,14 @@ function App() {
   useEffect(() => {
     if (!window.ethereum) {
       setHasMetaMask(false);
-      return;
     }
-
-    handleConnect();
   }, []);
 
   return (
     <div>
       <Header account={account} onConnect={handleConnect} />
       {!hasMetaMask ? (
-        <p style={{ color: "red" }}>🦊 Veuillez installer MetaMask pour utiliser l’application.</p>
+        <p style={{ color: "red" }}>Veuillez installer MetaMask pour utiliser l’application.</p>
       ) : account ? (
         <ProposalList userAddress={account} />
       ) : (

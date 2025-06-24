@@ -14,22 +14,24 @@ export async function connectWallet() {
   }
 
   try {
-    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-    web3 = new Web3(window.ethereum);
-
-    const currentNetworkId = await web3.eth.net.getId();
-    if (currentNetworkId.toString() !== NETWORK_ID) {
-      alert(`Connectez-vous au réseau Ganache (ID attendu : ${NETWORK_ID})`);
-      return null;
+    const existingAccounts = await window.ethereum.request({ method: "eth_accounts" });
+    if (existingAccounts.length > 0) {
+      web3 = new Web3(window.ethereum);
+      contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+      return existingAccounts[0];
     }
 
+    // Si non encore connecté, alors on demande l'autorisation
+    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+    web3 = new Web3(window.ethereum);
     contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
-    return accounts[0]; // retourne l’adresse connectée
+    return accounts[0];
   } catch (error) {
     console.error("Erreur lors de la connexion à MetaMask :", error);
     return null;
   }
 }
+
 
 /**
  * Récupère le nombre total de propositions.
