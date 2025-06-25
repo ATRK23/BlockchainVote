@@ -41,21 +41,24 @@ chmod +x run.sh
 
 ### 5. Configuration MetaMask
 - Installer l'extension navigateur [MetaMask](https://metamask.io/)
-- Se créer un compte
 - Lancer temporairement ganache pour qu'il soit détecté par MetaMask : 
 ```bash
-ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337
+ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337 --wallet.seed "voteblockchain" --db ./ganache-data
 ```
+- Importer un compte via une clé privée donnée dans la console de ganache
+
 #### Créer un nouveau réseau personnalisé avec les paramètres suivants :
 - URL par défaut du RPC : ```http://127.0.0.1:8545```
 - ID de chaîne : ```1337```
 - Symbole de la devise : ```ETH```
 
+### 6. Selectionner ce réseau
+
 ## Utilisation
 
 ### - Dans un premier terminal : **Lancer ganache**
 ```bash
-ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337
+ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337 --wallet.seed "voteblockchain" --db ./ganache-data
 ```
 
 ### - Dans un second terminal : Script de lancement
@@ -66,3 +69,11 @@ ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337
 ### - Se rendre sur le site web hebergé
 - [http://localhost:5173/](http://localhost:5173/)
 
+## Problèmes et développement
+
+### 1. Remettre les compteurs de votes à zéro (entre autres)
+Démarrer le script de lancement avec l'attribut ```true```
+
+```bash
+./run.sh true
+```
