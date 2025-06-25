@@ -15,3 +15,5 @@ states/
 .env.local
 
 build/
+
+ganache-data/
