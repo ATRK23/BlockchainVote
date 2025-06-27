@@ -1,3 +1,6 @@
+# Ignorer les dépendances locales
+node_modules/
+
 # Remix compiler artifacts
 **/artifacts/
 **/artifacts/**

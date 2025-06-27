@@ -1,67 +1,68 @@
 import { useEffect, useState } from "react";
 import Web3 from "web3";
+import { getProposals, hasUserVoted, isContractReady, voteProposal } from "../services/blockchainService";
 import ProposalCard from "./ProposalCard";
-import { getProposals, voteProposal, hasUserVoted, isContractReady } from "../services/blockchainService";
 
-function ProposalList({ userAddress }) {
+function ProposalList({ userAddress, setProposals: setProposalsFromApp }) {
   const [proposals, setProposals] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [votingIndex, setVotingIndex] = useState(null); // En cours
-  const [hasVoted, setHasVoted] = useState(false);      // A voté
-  const [votedIndex, setVotedIndex] = useState(null);   // Lequel
+  const [votingIndex, setVotingIndex] = useState(null);
+  const [hasVoted, setHasVoted] = useState(false);
+  const [votedIndex, setVotedIndex] = useState(null);
 
-useEffect(() => {
-  const fetchData = async () => {
-    if (!isContractReady()) return;
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!isContractReady()) return;
 
-    try {
-      const voted = await hasUserVoted(userAddress);
-      setHasVoted(voted);
-      const data = await getProposals();
-      setProposals(data);
-    } catch (error) {
-      console.error("Erreur lors du chargement :", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchData();
-}, [userAddress]);
-
-
-useEffect(() => {
-  if (!window.ethereum || !userAddress) return;
-
-  const setupListener = async () => {
-    const contractJson = await import("../contracts/Vote.json");
-    const web3 = new Web3(window.ethereum);
-    const contract = new web3.eth.Contract(contractJson.default.abi, contractJson.default.address);
-
-    const subscription = contract.events.VoteCast({}, async (err, event) => {
-      if (err) return console.error("Erreur VoteCast", err);
-
-      const updatedProposals = await getProposals();
-      setProposals(updatedProposals);
-
-      const voted = await hasUserVoted(userAddress);
-      setHasVoted(voted);
-
-      for (let i = 0; i < updatedProposals.length; i++) {
-        if (updatedProposals[i].voteCount > proposals[i]?.voteCount) {
-          setVotedIndex(i);
-          break;
-        }
+      try {
+        const voted = await hasUserVoted(userAddress);
+        setHasVoted(voted);
+        const data = await getProposals();
+        setProposals(data);
+        setProposalsFromApp(data);
+      } catch (error) {
+        console.error("Erreur lors du chargement :", error);
+      } finally {
+        setLoading(false);
       }
-    });
-
-    return () => {
-      if (subscription.unsubscribe) subscription.unsubscribe();
     };
-  };
 
-  setupListener();
-}, [userAddress]);
+    fetchData();
+  }, [userAddress]);
+
+  useEffect(() => {
+    if (!window.ethereum || !userAddress) return;
+
+    const setupListener = async () => {
+      const contractJson = await import("../contracts/Vote.json");
+      const web3 = new Web3(window.ethereum);
+      const contract = new web3.eth.Contract(contractJson.default.abi, contractJson.default.address);
+
+      const subscription = contract.events.VoteCast({}, async (err, event) => {
+        if (err) return console.error("Erreur VoteCast", err);
+
+        const updatedProposals = await getProposals();
+        setProposals(updatedProposals);
+        setProposalsFromApp(updatedProposals);
+
+        const voted = await hasUserVoted(userAddress);
+        setHasVoted(voted);
+
+        for (let i = 0; i < updatedProposals.length; i++) {
+          if (updatedProposals[i].voteCount > proposals[i]?.voteCount) {
+            setVotedIndex(i);
+            break;
+          }
+        }
+      });
+
+      return () => {
+        if (subscription.unsubscribe) subscription.unsubscribe();
+      };
+    };
+
+    setupListener();
+  }, [userAddress]);
 
   const handleVote = async (index) => {
     setVotingIndex(index);
@@ -72,6 +73,7 @@ useEffect(() => {
       setVotedIndex(index);
       const updated = await getProposals();
       setProposals(updated);
+      setProposalsFromApp(updated);
     }
 
     setVotingIndex(null);
