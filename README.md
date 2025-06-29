@@ -18,7 +18,7 @@ sudo apt update
 sudo apt install -y nodejs npm
 ```
 
-#### Vérifier la version et l'installation
+#### Vérifier les versions et la bonne installation
 ```bash
 node -v     # Doit être ≥ 14
 npm -v
@@ -34,14 +34,18 @@ npm install -g truffle
 npm install -g ganache
 ```
 
-### 4. Donner les droits d'execution au script de lancement
+### 4. Donner les droits d'execution aux scripts de lancement
 ```bash
-chmod +x run.sh
+chmod +x run-web.sh run-ganache.sh
 ```
 
 ### 5. Configuration MetaMask
 - Installer l'extension navigateur [MetaMask](https://metamask.io/)
 - Lancer temporairement ganache pour qu'il soit détecté par MetaMask : 
+```bash
+./run-ganache.sh
+```
+ou
 ```bash
 ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337 --wallet.seed "voteblockchain" --db ./ganache-data
 ```
@@ -58,12 +62,12 @@ ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337 --wallet.seed "v
 
 ### - Dans un premier terminal : **Lancer ganache**
 ```bash
-ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337 --wallet.seed "voteblockchain" --db ./ganache-data
+./run-ganache
 ```
 
 ### - Dans un second terminal : Script de lancement
 ```bash
-./run.sh
+./run-web.sh
 ```
 
 ### - Se rendre sur le site web hebergé
@@ -71,9 +75,9 @@ ganache --port 8545 --chain.chainId 1337 --chain.networkId 1337 --wallet.seed "v
 
 ## Problèmes et développement
 
-### 1. Remettre les compteurs de votes à zéro (entre autres)
+### 1. Remettre les compteurs de votes à zéro et réinstaller complétement la DApp
 Démarrer le script de lancement avec l'attribut ```true```
 
 ```bash
-./run.sh true
+./run-web.sh true
 ```
