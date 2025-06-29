@@ -1,6 +1,11 @@
 import { Cell, Legend, Pie, PieChart, Tooltip } from "recharts";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF", "#FF4560"];
+const COLORS = [
+  "#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF",
+  "#FF4560", "#1E90FF", "#32CD32", "#FFD700", "#FF69B4",
+  "#A52A2A", "#7B68EE", "#20B2AA", "#DC143C", "#00CED1",
+  "#8A2BE2", "#FF8C00", "#ADFF2F", "#FF1493", "#4B0082"
+];
 
 const ResultsChart = ({ proposals }) => {
   const data = proposals.map((proposal) => ({
@@ -12,13 +17,25 @@ const ResultsChart = ({ proposals }) => {
   return (
     <div style={{ marginTop: "40px", textAlign: "center" }}>
       <h2>Résultats du vote</h2>
-      <PieChart width={400} height={400}>
+      <PieChart width={500} height={500}>
         <Pie
           data={data}
           cx="50%"
           cy="50%"
           labelLine={false}
-          label={({ name, value }) => `${name}: ${value}`}
+          label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+            if (percent === 0) return null;
+            const RADIAN = Math.PI / 180;
+            const radius = 25 + innerRadius + (outerRadius - innerRadius);
+            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+            return (
+              <text x={x} y={y} fill="black" textAnchor="middle" dominantBaseline="central">
+                {`${(percent * 100).toFixed(0)}%`}
+              </text>
+            );
+          }}
           outerRadius={140}
           fill="#8884d8"
           dataKey="value"
