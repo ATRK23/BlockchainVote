@@ -31,3 +31,21 @@ describe("ProposalList Component", () => {
     expect(await screen.findByText(/Proposition A/)).toBeInTheDocument();
     expect(await screen.findByText(/Proposition B/)).toBeInTheDocument();
   });
+
+  it("appelle voteProposal() lorsqu'on clique sur le bouton Voter", async () => {
+    blockchainService.getProposals.mockResolvedValue([
+      { index: 0, description: "Proposition Test", voteCount: 3 }
+    ]);
+    blockchainService.hasUserVoted.mockResolvedValue(false);
+    blockchainService.voteProposal.mockResolvedValue(true);
+
+    render(<ProposalList userAddress={fakeUser} setProposals={mockSetProposals} />);
+
+    const voteButton = await screen.findByRole("button", { name: /voter/i });
+    fireEvent.click(voteButton);
+
+    await waitFor(() => {
+      expect(blockchainService.voteProposal).toHaveBeenCalledWith(0, fakeUser);
+    });
+  });
+});
