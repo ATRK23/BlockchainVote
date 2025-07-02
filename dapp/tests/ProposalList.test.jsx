@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import ProposalList from "..//components/ProposalList";
+import ProposalList from "../src/components/ProposalList";
 import * as blockchainService from "../src/services/blockchainService";
 
 // Mock complet du service blockchain
